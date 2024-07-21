@@ -1,0 +1,60 @@
+import heapq
+
+def a_star(graph, start, goal):
+    # Priority queue to store the nodes to be evaluated
+    open_set = []
+    heapq.heappush(open_set, (0, start))
+
+    # Dictionaries to store the cost and path
+    g_cost = {start: 0}
+    f_cost = {start: heuristic(start, goal)}
+    came_from = {}
+
+    while open_set:
+        current = heapq.heappop(open_set)[1]
+
+        # If the goal is reached, reconstruct and return the path
+        if current == goal:
+            return reconstruct_path(came_from, current)
+
+        for neighbor, weight in graph[current].items():
+            tentative_g_cost = g_cost[current] + weight
+
+            if neighbor not in g_cost or tentative_g_cost < g_cost[neighbor]:
+                came_from[neighbor] = current
+                g_cost[neighbor] = tentative_g_cost
+                f_cost[neighbor] = tentative_g_cost + heuristic(neighbor, goal)
+                heapq.heappush(open_set, (f_cost[neighbor], neighbor))
+
+    return None  # No path found
+
+def heuristic(node, goal):
+    # Implement the heuristic function (Manhattan distance for grid)
+    return abs(node[0] - goal[0]) + abs(node[1] - goal[1])
+
+def reconstruct_path(came_from, current):
+    path = [current]
+    while current in came_from:
+        current = came_from[current]
+        path.append(current)
+    path.reverse()
+    return path
+
+# Example usage
+graph = {
+    (0, 0): {(0, 1): 1, (1, 0): 1},
+    (0, 1): {(0, 0): 1, (1, 1): 1, (0, 2): 1},
+    (1, 0): {(0, 0): 1, (1, 1): 1, (2, 0): 1},
+    (1, 1): {(0, 1): 1, (1, 0): 1, (1, 2): 1, (2, 1): 1},
+    (0, 2): {(0, 1): 1, (1, 2): 1},
+    (2, 0): {(1, 0): 1, (2, 1): 1},
+    (1, 2): {(0, 2): 1, (1, 1): 1, (2, 2): 1},
+    (2, 1): {(1, 1): 1, (2, 0): 1, (2, 2): 1},
+    (2, 2): {(1, 2): 1, (2, 1): 1}
+}
+
+start = (0, 0)
+goal = (2, 2)
+
+path = a_star(graph, start, goal)
+print(f"The path from {start} to {goal} is: {path}")
