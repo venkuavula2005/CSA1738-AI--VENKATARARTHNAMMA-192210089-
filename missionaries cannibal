@@ -1,0 +1,72 @@
+from collections import deque
+
+def is_valid_state(state):
+    missionaries, cannibals, boat = state
+    if missionaries < 0 or missionaries > 3 or cannibals < 0 or cannibals > 3:
+        return False
+    if missionaries > 0 and missionaries < cannibals:
+        return False
+    if missionaries < 3 and (3 - missionaries) < (3 - cannibals):
+        return False
+    return True
+
+def get_successors(state):
+    successors = []
+    missionaries, cannibals, boat = state
+    if boat == 1:
+        new_boat = 0
+        for m in range(3):
+            for c in range(3):
+                if 0 < m + c <= 2:
+                    new_state = (missionaries - m, cannibals - c, new_boat)
+                    if is_valid_state(new_state):
+                        successors.append(new_state)
+    else:
+        new_boat = 1
+        for m in range(3):
+            for c in range(3):
+                if 0 < m + c <= 2:
+                    new_state = (missionaries + m, cannibals + c, new_boat)
+                    if is_valid_state(new_state):
+                        successors.append(new_state)
+    return successors
+
+def bfs(start_state, goal_state):
+    queue = deque([start_state])
+    visited = set()
+    visited.add(start_state)
+    parent = {start_state: None}
+    
+    while queue:
+        current_state = queue.popleft()
+        
+        if current_state == goal_state:
+            path = []
+            while current_state:
+                path.append(current_state)
+                current_state = parent[current_state]
+            path.reverse()
+            return path
+        
+        for successor in get_successors(current_state):
+            if successor not in visited:
+                visited.add(successor)
+                parent[successor] = current_state
+                queue.append(successor)
+    
+    return None
+
+def print_solution(path):
+    if path is None:
+        print("No solution found.")
+    else:
+        print("Solution path:")
+        for state in path:
+            print(state)
+
+if __name__ == "__main__":
+    start_state = (3, 3, 1)  # (missionaries, cannibals, boat side), boat side 1 means starting side, 0 means other side
+    goal_state = (0, 0, 0)
+    
+    solution_path = bfs(start_state, goal_state)
+    print_solution(solution_path)
