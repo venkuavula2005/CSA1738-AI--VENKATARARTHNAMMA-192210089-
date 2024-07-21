@@ -1,0 +1,45 @@
+import itertools
+
+# Function to calculate the minimum cost using dynamic programming
+def tsp_dynamic_programming(dist_matrix):
+    n = len(dist_matrix)
+
+    # Initialize memoization dictionary
+    memo = {}
+
+    # Define a helper function for dynamic programming
+    def dp(mask, pos):
+        # If all cities are visited, return the distance to start
+        if mask == (1 << n) - 1:
+            return dist_matrix[pos][0]
+
+        # If result is already computed, return it
+        if (mask, pos) in memo:
+            return memo[(mask, pos)]
+
+        # Initialize the minimum cost to a large number
+        min_cost = float('inf')
+
+        # Try visiting all the unvisited cities
+        for city in range(n):
+            if mask & (1 << city) == 0:
+                new_cost = dist_matrix[pos][city] + dp(mask | (1 << city), city)
+                min_cost = min(min_cost, new_cost)
+
+        # Store the result in the memo dictionary
+        memo[(mask, pos)] = min_cost
+        return min_cost
+
+    # Start the dynamic programming with the initial mask and position
+    return dp(1, 0)
+
+# Example usage:
+dist_matrix = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+
+result = tsp_dynamic_programming(dist_matrix)
+print(f"The minimum cost to visit all cities is: {result}")
