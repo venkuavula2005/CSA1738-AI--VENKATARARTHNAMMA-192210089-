@@ -1,0 +1,34 @@
+def dfs_iterative(graph, start_node):
+    visited = set()  # Set to keep track of visited nodes
+    stack = [start_node]  # Stack for DFS
+
+    dfs_order = []  # List to store the order of traversal
+
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            dfs_order.append(node)
+
+            # Push all adjacent nodes to the stack
+            for neighbor in reversed(graph[node]):
+                if neighbor not in visited:
+                    stack.append(neighbor)
+
+    return dfs_order
+
+# Example usage
+if __name__ == "__main__":
+    # Graph represented as an adjacency list
+    graph = {
+        'A': ['B', 'C'],
+        'B': ['A', 'D', 'E'],
+        'C': ['A', 'F'],
+        'D': ['B'],
+        'E': ['B', 'F'],
+        'F': ['C', 'E']
+    }
+
+    start_node = 'A'
+    dfs_result = dfs_iterative(graph, start_node)
+    print(f"DFS Order starting from {start_node}: {dfs_result}")
