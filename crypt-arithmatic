@@ -1,0 +1,33 @@
+from itertools import permutations
+
+def is_valid_solution(mapping, words, result):
+    words_sum = sum(int(''.join(mapping[char] for char in word)) for word in words)
+    result_value = int(''.join(mapping[char] for char in result))
+    return words_sum == result_value
+
+def solve_cryptarithmetic(words, result):
+    letters = set(''.join(words) + result)
+    if len(letters) > 10:
+        raise ValueError("Too many unique letters for digits 0-9")
+    
+    for perm in permutations('0123456789', len(letters)):
+        mapping = dict(zip(letters, perm))
+        if all(mapping[word[0]] != '0' for word in words + [result]):
+            if is_valid_solution(mapping, words, result):
+                return mapping
+    return None
+
+def print_solution(mapping):
+    if mapping:
+        print("Solution found:")
+        for key, value in mapping.items():
+            print(f"{key} = {value}")
+    else:
+        print("No solution found.")
+
+if __name__ == "__main__":
+    words = ["SEND", "MORE"]
+    result = "MONEY"
+    
+    solution = solve_cryptarithmetic(words, result)
+    print_solution(solution)
