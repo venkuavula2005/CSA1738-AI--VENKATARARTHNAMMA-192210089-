@@ -1,0 +1,58 @@
+from collections import deque
+
+def bfs_water_jug(jug1_capacity, jug2_capacity, target):
+    # Initialize the queue with the starting state (0, 0)
+    queue = deque([(0, 0)])
+    visited = set()
+    visited.add((0, 0))
+    parent = {}
+    
+    while queue:
+        current = queue.popleft()
+        
+        # If we reach the target amount in either jug, return the path to this state
+        if current[0] == target or current[1] == target:
+            path = []
+            while current in parent:
+                path.append(current)
+                current = parent[current]
+            path.append((0, 0))
+            path.reverse()
+            return path
+        
+        # Get the current amount of water in both jugs
+        jug1, jug2 = current
+        
+        # Possible actions:
+        next_states = [
+            (jug1_capacity, jug2),  # Fill jug1
+            (jug1, jug2_capacity),  # Fill jug2
+            (0, jug2),              # Empty jug1
+            (jug1, 0),              # Empty jug2
+            (jug1 - min(jug1, jug2_capacity - jug2), jug2 + min(jug1, jug2_capacity - jug2)),  # Pour jug1 into jug2
+            (jug1 + min(jug2, jug1_capacity - jug1), jug2 - min(jug2, jug1_capacity - jug1))   # Pour jug2 into jug1
+        ]
+        
+        for state in next_states:
+            if state not in visited:
+                queue.append(state)
+                visited.add(state)
+                parent[state] = current
+
+    return None  # No solution found
+
+def print_solution(path):
+    if path is None:
+        print("No solution found.")
+    else:
+        print("Solution path:")
+        for state in path:
+            print(f"Jug1: {state[0]} liters, Jug2: {state[1]} liters")
+
+if __name__ == "__main__":
+    jug1_capacity = 4
+    jug2_capacity = 3
+    target = 2
+    
+    solution_path = bfs_water_jug(jug1_capacity, jug2_capacity, target)
+    print_solution(solution_path)
