@@ -1,0 +1,114 @@
+import math
+
+# Function to print the board
+def print_board(board):
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 5)
+
+# Function to check for a winner
+def check_winner(board, player):
+    # Check rows
+    for row in board:
+        if all([cell == player for cell in row]):
+            return True
+    # Check columns
+    for col in range(3):
+        if all([board[row][col] == player for row in range(3)]):
+            return True
+    # Check diagonals
+    if all([board[i][i] == player for i in range(3)]) or all([board[i][2-i] == player for i in range(3)]):
+        return True
+    return False
+
+# Function to check for a draw
+def check_draw(board):
+    return all([cell != ' ' for row in board for cell in row])
+
+# Function to evaluate the board state
+def evaluate(board):
+    if check_winner(board, 'X'):
+        return 1
+    elif check_winner(board, 'O'):
+        return -1
+    else:
+        return 0
+
+# Minimax function
+def minimax(board, depth, is_maximizing):
+    score = evaluate(board)
+    if score == 1 or score == -1:
+        return score
+    if check_draw(board):
+        return 0
+
+    if is_maximizing:
+        best_score = -math.inf
+        for row in range(3):
+            for col in range(3):
+                if board[row][col] == ' ':
+                    board[row][col] = 'X'
+                    best_score = max(best_score, minimax(board, depth + 1, False))
+                    board[row][col] = ' '
+        return best_score
+    else:
+        best_score = math.inf
+        for row in range(3):
+            for col in range(3):
+                if board[row][col] == ' ':
+                    board[row][col] = 'O'
+                    best_score = min(best_score, minimax(board, depth + 1, True))
+                    board[row][col] = ' '
+        return best_score
+
+# Function to find the best move
+def find_best_move(board):
+    best_move = None
+    best_value = -math.inf
+    for row in range(3):
+        for col in range(3):
+            if board[row][col] == ' ':
+                board[row][col] = 'X'
+                move_value = minimax(board, 0, False)
+                board[row][col] = ' '
+                if move_value > best_value:
+                    best_move = (row, col)
+                    best_value = move_value
+    return best_move
+
+# Main function
+def main():
+    board = [[' ' for _ in range(3)] for _ in range(3)]
+    current_player = 'X'
+
+    while True:
+        print_board(board)
+        if current_player == 'X':
+            move = find_best_move(board)
+            if move:
+                board[move[0]][move[1]] = 'X'
+            else:
+                print("No moves left. It's a draw!")
+                break
+        else:
+            move = int(input(f"Player {current_player}, enter your move (1-9): ")) - 1
+            row, col = move // 3, move % 3
+            if board[row][col] == ' ':
+                board[row][col] = 'O'
+            else:
+                print("Invalid move. Try again.")
+                continue
+
+        if check_winner(board, current_player):
+            print_board(board)
+            print(f"Player {current_player} wins!")
+            break
+        if check_draw(board):
+            print_board(board)
+            print("The game is a draw!")
+            break
+
+        current_player = 'O' if current_player == 'X' else 'X'
+
+if __name__ == "__main__":
+    main()
