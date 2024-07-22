@@ -1,0 +1,58 @@
+class MapColoringCSP:
+    def __init__(self, variables, domains, neighbors):
+        self.variables = variables  # List of variables
+        self.domains = domains  # Dictionary of possible values for each variable
+        self.neighbors = neighbors  # Dictionary of neighboring variables
+        self.assignments = {}  # Current assignments
+
+    def is_consistent(self, var, value):
+        """Check if assigning value to var is consistent with current assignments"""
+        for neighbor in self.neighbors[var]:
+            if neighbor in self.assignments and self.assignments[neighbor] == value:
+                return False
+        return True
+
+    def backtrack(self):
+        """Use backtracking to find a solution"""
+        if len(self.assignments) == len(self.variables):
+            return self.assignments
+
+        unassigned_vars = [v for v in self.variables if v not in self.assignments]
+        var = unassigned_vars[0]
+
+        for value in self.domains[var]:
+            if self.is_consistent(var, value):
+                self.assignments[var] = value
+                result = self.backtrack()
+                if result:
+                    return result
+                del self.assignments[var]
+
+        return None
+
+def main():
+    # Example map: Australia with 7 regions
+    variables = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+    domains = {var: ['Red', 'Green', 'Blue'] for var in variables}
+    neighbors = {
+        'WA': ['NT', 'SA'],
+        'NT': ['WA', 'SA', 'Q'],
+        'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+        'Q': ['NT', 'SA', 'NSW'],
+        'NSW': ['Q', 'SA', 'V'],
+        'V': ['SA', 'NSW'],
+        'T': []
+    }
+
+    csp = MapColoringCSP(variables, domains, neighbors)
+    solution = csp.backtrack()
+
+    if solution:
+        print("Solution found:")
+        for region in solution:
+            print(f"{region}: {solution[region]}")
+    else:
+        print("No solution found.")
+
+if __name__ == "__main__":
+    main()
