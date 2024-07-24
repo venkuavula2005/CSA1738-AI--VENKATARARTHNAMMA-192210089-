@@ -1,0 +1,62 @@
+% Define symptoms for various diseases
+symptom(flu, fever).
+symptom(flu, cough).
+symptom(flu, sore_throat).
+symptom(flu, runny_nose).
+
+symptom(common_cold, cough).
+symptom(common_cold, runny_nose).
+symptom(common_cold, sneezing).
+symptom(common_cold, sore_throat).
+
+symptom(strep_throat, fever).
+symptom(strep_throat, sore_throat).
+symptom(strep_throat, swollen_lymph_nodes).
+
+symptom(pneumonia, fever).
+symptom(pneumonia, cough).
+symptom(pneumonia, shortness_of_breath).
+symptom(pneumonia, chest_pain).
+
+symptom(asthma, shortness_of_breath).
+symptom(asthma, wheezing).
+symptom(asthma, cough).
+
+% Rules for diagnosis based on symptoms
+has_symptom(Disease, Symptom) :- symptom(Disease, Symptom).
+
+% Diagnosis rule
+diagnose(Disease) :-
+    write('Checking symptoms for: '), write(Disease), nl,
+    findall(Symptom, symptom(Disease, Symptom), Symptoms),
+    check_symptoms(Symptoms),
+    nl,
+    write('Diagnosis: You may have '), write(Disease), nl.
+
+% Check if the user has all symptoms
+check_symptoms([]).
+check_symptoms([Symptom|Symptoms]) :-
+    format('Do you have ~w? (yes/no) ', [Symptom]),
+    read(Response),
+    (Response == yes -> true ; fail),
+    check_symptoms(Symptoms).
+
+% Find possible diseases based on user symptoms
+find_disease :-
+    write('Please answer the following questions with yes or no.'), nl,
+    findall(Disease, symptom(Disease, _), Diseases),
+    list_possible_diseases(Diseases).
+
+list_possible_diseases([]) :-
+    write('No more possible diseases.'), nl.
+
+list_possible_diseases([Disease|Diseases]) :-
+    (diagnose(Disease) -> true ; true),
+    list_possible_diseases(Diseases).
+
+% Entry point
+start :-
+    write('Welcome to the Medical Diagnosis System'), nl,
+    find_disease,
+    nl,
+    write('Thank you for using the Medical Diagnosis System'), nl.
