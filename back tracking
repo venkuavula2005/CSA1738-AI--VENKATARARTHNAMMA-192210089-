@@ -1,0 +1,39 @@
+% Facts about fruits and their colors
+fruit_color(apple, red).
+fruit_color(banana, yellow).
+fruit_color(grape, purple).
+fruit_color(orange, orange).
+fruit_color(lemon, yellow).
+fruit_color(blueberry, blue).
+fruit_color(strawberry, red).
+fruit_color(watermelon, green).
+fruit_color(kiwi, brown).
+
+% Predicate to find the color of a given fruit
+find_color(Fruit, Color) :-
+    fruit_color(Fruit, Color).
+
+% Predicate to find all fruits of a given color
+find_fruit_by_color(Color, Fruit) :-
+    fruit_color(Fruit, Color).
+
+% Query to list all fruits and their colors using backtracking
+list_all_fruits :-
+    fruit_color(Fruit, Color),
+    write(Fruit), write(' is '), write(Color), nl,
+    fail.
+list_all_fruits.
+
+% Query to find all fruits of a given color
+list_fruits_by_color(Color) :-
+    find_fruit_by_color(Color, Fruit),
+    write(Fruit), nl,
+    fail.
+list_fruits_by_color(_).
+
+% Query to find the color of a given fruit
+find_color_of_fruit(Fruit) :-
+    find_color(Fruit, Color),
+    write(Fruit), write(' is '), write(Color), nl,
+    fail.
+find_color_of_fruit(_).
