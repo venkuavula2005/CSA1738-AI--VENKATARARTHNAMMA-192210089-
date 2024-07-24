@@ -1,0 +1,30 @@
+% Define facts for the database
+% student(Name, SubjectCode)
+% teacher(Name, SubjectCode)
+% subject(SubjectCode, SubjectName)
+
+student('Alice', 'CS101').
+student('Bob', 'CS102').
+student('Charlie', 'CS101').
+student('Diana', 'CS103').
+student('Eve', 'CS102').
+
+teacher('Prof. Smith', 'CS101').
+teacher('Prof. Johnson', 'CS102').
+teacher('Prof. Williams', 'CS103').
+
+subject('CS101', 'Introduction to Computer Science').
+subject('CS102', 'Data Structures').
+subject('CS103', 'Algorithms').
+
+% Query to get the subjects a student is enrolled in
+student_subject(Student, SubjectName) :-
+    student(Student, SubjectCode),
+    subject(SubjectCode, SubjectName).
+
+% Query to get the teacher of a specific subject
+teacher_of_subject(Teacher, SubjectName) :-
+    teacher(Teacher, SubjectCode),
+    subject(SubjectCode, SubjectName).
+
+% Query to get the students taught by a specific teacher
