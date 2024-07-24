@@ -1,0 +1,49 @@
+% Initial state and goal state
+% state(MonkeyPosition, BoxPosition, MonkeyOnBox, HasBanana)
+
+initial_state(state(at_door, at_window, on_floor, has_not)).
+goal_state(state(_, _, _, has)).
+
+% Define the actions
+% move(MonkeyPosition, NewMonkeyPosition)
+move(at_door, at_window).
+move(at_door, at_chair).
+move(at_window, at_door).
+move(at_window, at_chair).
+move(at_chair, at_door).
+move(at_chair, at_window).
+
+% push(BoxPosition, NewBoxPosition)
+push(at_door, at_window).
+push(at_door, at_chair).
+push(at_window, at_door).
+push(at_window, at_chair).
+push(at_chair, at_door).
+push(at_chair, at_window).
+
+% climb
+climb(on_floor, on_box).
+climb(on_box, on_floor).
+
+% grab
+grab(has_not, has).
+
+% State transitions
+perform(move(NewPos), state(_, Box, on_floor, Has), state(NewPos, Box, on_floor, Has)).
+perform(push(NewPos), state(Pos, Pos, on_floor, Has), state(NewPos, NewPos, on_floor, Has)).
+perform(climb, state(Pos, Box, on_floor, Has), state(Pos, Box, on_box, Has)).
+perform(climb, state(Pos, Box, on_box, Has), state(Pos, Box, on_floor, Has)).
+perform(grab, state(at_chair, at_chair, on_box, has_not), state(at_chair, at_chair, on_box, has)).
+
+% Plan to reach the goal state
+plan(State, _, []) :- goal_state(State).
+plan(State, Visited, [Action|Actions]) :-
+    perform(Action, State, NewState),
+    \+ member(NewState, Visited),
+    plan(NewState, [NewState|Visited], Actions).
+
+% Find the plan
+find_plan :-
+    initial_state(State),
+    plan(State, [State], Actions),
+    write('Plan: '), write(Actions), nl.
