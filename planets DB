@@ -1,0 +1,27 @@
+% Define facts for the database
+% planet(Name, Type, DistanceFromSun, Diameter, Moons)
+
+planet('Mercury', 'Terrestrial', 57.9, 4879, 0).
+planet('Venus', 'Terrestrial', 108.2, 12104, 0).
+planet('Earth', 'Terrestrial', 149.6, 12742, 1).
+planet('Mars', 'Terrestrial', 227.9, 6779, 2).
+planet('Jupiter', 'Gas Giant', 778.3, 139820, 79).
+planet('Saturn', 'Gas Giant', 1427.0, 116460, 83).
+planet('Uranus', 'Ice Giant', 2871.0, 50724, 27).
+planet('Neptune', 'Ice Giant', 4497.1, 49244, 14).
+
+% Query to get the type of a planet
+planet_type(Planet, Type) :-
+    planet(Planet, Type, _, _, _).
+
+% Query to get the distance of a planet from the Sun
+planet_distance(Planet, Distance) :-
+    planet(Planet, _, Distance, _, _).
+
+% Query to get the diameter of a planet
+planet_diameter(Planet, Diameter) :-
+    planet(Planet, _, _, Diameter, _).
+
+% Query to get the number of moons of a planet
+planet_moons(Planet, Moons) :-
+    planet(Planet, _, _, _, Moons).
