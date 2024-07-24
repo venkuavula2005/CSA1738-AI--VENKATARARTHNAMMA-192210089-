@@ -1,0 +1,29 @@
+% Define facts about family relationships
+% parent(Parent, Child) states that Parent is a parent of Child
+parent('John', 'Alice').
+parent('John', 'Bob').
+parent('Mary', 'Alice').
+parent('Mary', 'Bob').
+
+parent('Bob', 'Charlie').
+parent('Alice', 'Charlie').
+
+parent('Charlie', 'David').
+parent('Eve', 'David').
+
+% Define rules for relationships based on parent facts
+
+% A person is a mother if she is a parent and the other parent is not listed as a mother
+mother(Mother, Child) :-
+    parent(Mother, Child),
+    female(Mother).
+
+% A person is a father if he is a parent and the other parent is not listed as a father
+father(Father, Child) :-
+    parent(Father, Child),
+    male(Father).
+
+% Determine if a person is male or female
+male('John').
+male('Bob').
+male('Charlie').
