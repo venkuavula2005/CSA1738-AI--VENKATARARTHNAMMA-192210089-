@@ -1,0 +1,54 @@
+% Facts
+fact(sunny).
+fact(warm).
+fact(weekend).
+
+% Rules
+rule(go_outside) :- fact(sunny), fact(warm), fact(weekend).
+rule(swimming) :- fact(sunny), fact(warm).
+rule(reading) :- fact(rainy).
+rule(movie) :- fact(rainy), fact(weekend).
+
+% Backward chaining implementation
+backward_chain(Goal) :-
+    fact(Goal),
+    write(Goal), write(' is already a known fact.'), nl.
+backward_chain(Goal) :-
+    rule(Goal),
+    write('Derived '), write(Goal), write(' using rules.'), nl,
+    assert(fact(Goal)).
+backward_chain(Goal) :-
+    rule(Goal),
+    write('Checking rules to derive: '), write(Goal), nl,
+    findall(Condition, clause(rule(Goal), Condition), Conditions),
+    prove_all(Conditions),
+    assert(fact(Goal)),
+    write('Derived '), write(Goal), write(' after proving conditions.'), nl.
+
+% Prove all conditions
+prove_all([]).
+prove_all([H|T]) :-
+    backward_chain(H),
+    prove_all(T).
+
+% Query to find if a goal can be achieved
+can_achieve(Goal) :-
+    backward_chain(Goal),
+    write('Goal '), write(Goal), write(' achieved.'), nl.
+
+% Query to list all current facts
+list_facts :-
+    findall(Fact, fact(Fact), Facts),
+    write('Current facts: '), write(Facts), nl.
+
+% Entry point
+start :-
+    write('Initial facts:'), nl,
+    list_facts,
+    nl,
+    write('Enter the goal to achieve: '), nl,
+    read(Goal),
+    can_achieve(Goal),
+    nl,
+    write('Final facts after backward chaining:'), nl,
+    list_facts.
