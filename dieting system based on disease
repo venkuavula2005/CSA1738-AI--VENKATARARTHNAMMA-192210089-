@@ -1,0 +1,21 @@
+% Define facts about recommended diets for various diseases
+diet_for_disease('Diabetes', 'Low-Carb Diet').
+diet_for_disease('Hypertension', 'Low-Sodium Diet').
+diet_for_disease('High Cholesterol', 'Low-Fat Diet').
+diet_for_disease('Gastrointestinal Issues', 'Low-FODMAP Diet').
+diet_for_disease('Obesity', 'Calorie-Restricted Diet').
+
+% Define rules to suggest a diet based on the disease
+suggest_diet(Disease, Diet) :-
+    diet_for_disease(Disease, Diet),
+    write('For '), write(Disease), write(', the recommended diet is '), write(Diet), nl.
+
+% Query to find a diet recommendation for a given disease
+find_diet(Disease) :-
+    diet_for_disease(Disease, Diet),
+    write('The recommended diet for '), write(Disease), write(' is '), write(Diet), nl.
+
+% Query to list all diseases and their corresponding recommended diets
+list_all_diets :-
+    forall(diet_for_disease(Disease, Diet),
+           (write('Disease: '), write(Disease), write(' - Diet: '), write(Diet), nl)).
