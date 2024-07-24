@@ -1,0 +1,16 @@
+% Define facts for the database
+% person(Name, DateOfBirth)
+
+person('Alice', '1990-05-10').
+person('Bob', '1985-11-23').
+person('Charlie', '1992-07-17').
+person('Diana', '1988-02-14').
+person('Eve', '1995-12-30').
+
+% Query to get the date of birth given a name
+date_of_birth(Name, DOB) :-
+    person(Name, DOB).
+
+% Query to get the name given a date of birth
+name_by_dob(DOB, Name) :-
+    person(Name, DOB).
