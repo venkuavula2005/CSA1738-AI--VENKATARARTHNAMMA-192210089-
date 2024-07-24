@@ -1,0 +1,19 @@
+% Define facts about which birds can fly
+can_fly('Sparrow').
+can_fly('Eagle').
+can_fly('Falcon').
+can_fly('Hawk').
+
+% Define facts about which birds cannot fly
+cannot_fly('Penguin').
+cannot_fly('Ostrich').
+cannot_fly('Kiwi').
+
+% Predicate to check if a bird can fly
+can_bird_fly(Bird) :-
+    can_fly(Bird),
+    write(Bird), write(' can fly.'), nl.
+
+can_bird_fly(Bird) :-
+    cannot_fly(Bird),
+    write(Bird), write(' cannot fly.'), nl.
